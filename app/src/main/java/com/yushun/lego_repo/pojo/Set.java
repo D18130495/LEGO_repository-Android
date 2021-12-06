@@ -1,4 +1,4 @@
-package com.yushun.lego_repo;
+package com.yushun.lego_repo.pojo;
 
 public class Set {
     int _id;

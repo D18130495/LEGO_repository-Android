@@ -1,4 +1,4 @@
-package com.yushun.lego_repo;
+package com.yushun.lego_repo.setsOperate;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -8,6 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.yushun.lego_repo.R;
+import com.yushun.lego_repo.pojo.Set;
 import com.yushun.lego_repo.utils.LoadImage;
 
 import java.util.ArrayList;
@@ -37,7 +39,12 @@ public class SetList extends ArrayAdapter {
         textViewNumber.setText(setList.get(position).getSet_number());
         imageViewImage.setTag(setList.get(position).getSet_image());
 
-        new LoadImage(imageViewImage).execute();
+        Thread thread = new Thread(){
+            public void run() {
+                new LoadImage(imageViewImage).execute();
+            }
+        };
+//        thread.start();
 
         return row;
     }

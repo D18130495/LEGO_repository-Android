@@ -1,10 +1,12 @@
-package com.yushun.lego_repo;
+package com.yushun.lego_repo.setsOperate;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+
+import com.yushun.lego_repo.pojo.Set;
 
 public class SetDBManager
 {
@@ -70,7 +72,7 @@ public class SetDBManager
     }
 
     //---retrieves all the rows ---
-    public Cursor getAllTask()
+    public Cursor getAllSet()
     {
         return myDatabase.query(DATABASE_TABLE, new String[] {KEY_ROWID, KEY_SETNAME, KEY_SETNUMBER, KEY_SETDESC, KEY_SETPRICE, KEY_SETIMAGE},
                 null, null, null, null, null);
@@ -92,6 +94,16 @@ public class SetDBManager
     {
         Cursor mCursor = myDatabase.query(true, DATABASE_TABLE, new String[] {KEY_ROWID, KEY_SETNAME, KEY_SETNUMBER, KEY_SETDESC, KEY_SETPRICE, KEY_SETIMAGE},
                         KEY_ROWID + "=" + rowId, null, null, null, null, null);
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        return mCursor;
+    }
+
+    public Cursor getSetByNumber(String setNumber) throws SQLException
+    {
+        Cursor mCursor = myDatabase.query(true, DATABASE_TABLE, new String[] {KEY_ROWID, KEY_SETNAME, KEY_SETNUMBER, KEY_SETDESC, KEY_SETPRICE, KEY_SETIMAGE},
+                KEY_SETNUMBER + "=" + setNumber, null, null, null, null, null);
         if (mCursor != null) {
             mCursor.moveToFirst();
         }

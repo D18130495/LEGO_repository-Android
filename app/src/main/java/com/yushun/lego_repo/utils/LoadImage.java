@@ -49,6 +49,7 @@ public class LoadImage extends AsyncTask<Object, Void, Bitmap> {
             connection.connect();
             InputStream input = connection.getInputStream();
             Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            input.close();
             return myBitmap;
         } catch (IOException e) {
             return null;

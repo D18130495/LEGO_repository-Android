@@ -5,8 +5,11 @@
       <map>
         <entry key="..\:/MobileSoftwareDevelopment31/LEGO_repository-Android/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.26979166666666665" />
         <entry key="..\:/MobileSoftwareDevelopment31/LEGO_repository-Android/app/src/main/res/drawable/ic_launcher_background.xml" value="0.26979166666666665" />
+        <entry key="..\:/MobileSoftwareDevelopment31/LEGO_repository-Android/app/src/main/res/drawable/tab_sign_selector.xml" value="0.26979166666666665" />
+        <entry key="..\:/MobileSoftwareDevelopment31/LEGO_repository-Android/app/src/main/res/layout/activity_display_set_info.xml" value="0.1" />
         <entry key="..\:/MobileSoftwareDevelopment31/LEGO_repository-Android/app/src/main/res/layout/activity_main.xml" value="0.23731884057971014" />
         <entry key="..\:/MobileSoftwareDevelopment31/LEGO_repository-Android/app/src/main/res/layout/row_item.xml" value="0.23731884057971014" />
+        <entry key="..\:/MobileSoftwareDevelopment31/LEGO_repository-Android/app/src/main/res/layout/row_item2.xml" value="0.25364583333333335" />
         <entry key="..\:/MobileSoftwareDevelopment31/assignment/app/src/main/res/layout/activity_main.xml" value="0.2390625" />
       </map>
     </option>
