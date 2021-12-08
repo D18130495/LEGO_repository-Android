@@ -61,16 +61,18 @@ public class BasketDBManager
         return myDatabase.insert(DATABASE_TABLE, null, initialValues);
     }
 
-//    public void deleteTable()
-//    {
-//        myDatabase.execSQL("delete from tasklist");
-//    }
-
-    //---deletes a particular task---
+    //---deletes a particular basket item---
     public boolean deleteBasketByNumber(String setNumber)
     {
         // delete statement.  If any rows deleted (i.e. >0), returns true
         return myDatabase.delete(DATABASE_TABLE, KEY_SETNUMBER + "=" + setNumber, null) > 0;
+    }
+
+    //---deletes all sets in the basket---
+    public boolean deleteBasket()
+    {
+        // delete statement.  If any rows deleted (i.e. >0), returns true
+        return myDatabase.delete(DATABASE_TABLE, null, null) > 0;
     }
 
     //---retrieves all the rows ---
@@ -81,27 +83,7 @@ public class BasketDBManager
 
     }
 
-    public Cursor getLastBasketItem()
-    {
-        Cursor mCursor = myDatabase.query(DATABASE_TABLE, new String[] {KEY_ROWID, KEY_SETNAME, KEY_SETNUMBER, KEY_SETPRICE, KEY_SETIMAGE, KEY_SETQUANTITY},
-                null, null, null, null, null);
-        if (mCursor != null) {
-            mCursor.moveToLast();
-        }
-        return mCursor;
-    }
-
-    //---retrieves a particular Basket Item---
-    public Cursor getBasketItem(long rowId) throws SQLException
-    {
-        Cursor mCursor = myDatabase.query(true, DATABASE_TABLE, new String[] {KEY_ROWID, KEY_SETNAME, KEY_SETNUMBER, KEY_SETPRICE, KEY_SETIMAGE, KEY_SETQUANTITY},
-                        KEY_ROWID + "=" + rowId, null, null, null, null, null);
-        if (mCursor != null) {
-            mCursor.moveToFirst();
-        }
-        return mCursor;
-    }
-
+    //---retrieves basket item by number---
     public Cursor getBasketItemByNumber(String setNumber) throws SQLException
     {
         Cursor mCursor = myDatabase.query(true, DATABASE_TABLE, new String[] {KEY_ROWID, KEY_SETNAME, KEY_SETNUMBER, KEY_SETPRICE, KEY_SETIMAGE, KEY_SETQUANTITY},

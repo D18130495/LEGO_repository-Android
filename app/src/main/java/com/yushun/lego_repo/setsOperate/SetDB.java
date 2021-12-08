@@ -16,6 +16,7 @@ public class SetDB extends SQLiteOpenHelper
     public static final String DATABASE_NAME = "lego_repo";
     public static final String DATABASE_TABLE = "sets";
     public static final String DATABASE_TABLE_BASKET = "basket";
+    public static final String DATABASE_TABLE_ORDER = "orders";
     public static final int DATABASE_VERSION = 1;
 
     private static final String DATABASE_CREATE =
@@ -36,6 +37,16 @@ public class SetDB extends SQLiteOpenHelper
                     "set_image text not null, " +
                     "set_quantity text not null);";
 
+    private static final String DATABASE_CREATE_ORDER =
+            "create table " + DATABASE_TABLE_ORDER  +
+                    " (_id integer primary key autoincrement, " +
+                    "order_number text not null," +
+                    "order_date text not null," +
+                    "set_name text not null, " +
+                    "set_number text not null, " +
+                    "set_price text not null, " +
+                    "set_quantity text not null);";
+
     public SetDB(Context context)
     {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -46,6 +57,7 @@ public class SetDB extends SQLiteOpenHelper
     {
         db.execSQL(DATABASE_CREATE);
         db.execSQL(DATABASE_CREATE_BASKET);
+        db.execSQL(DATABASE_CREATE_ORDER);
     }
 
     @Override

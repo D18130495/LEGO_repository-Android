@@ -1,8 +1,10 @@
 package com.yushun.lego_repo;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -15,29 +17,41 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yushun.lego_repo.basketOperate.BasketDBManager;
 import com.yushun.lego_repo.basketOperate.BasketList;
+import com.yushun.lego_repo.orderOperate.OrderDBManager;
+import com.yushun.lego_repo.orderOperate.OrderList;
 import com.yushun.lego_repo.pojo.Basket;
+import com.yushun.lego_repo.pojo.Order;
 import com.yushun.lego_repo.pojo.Set;
 import com.yushun.lego_repo.setsOperate.SetDBManager;
 import com.yushun.lego_repo.setsOperate.SetList;
 
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
     private ListView listView; // List
     private ListView searchListView; // Search List
     private ListView basketListView; // Basket List
+    private ListView orderListView; // Order List
     private SearchView searchView; // Search
-    private RadioGroup radioGroup;
+    private RadioGroup radioGroup; // bottom menus
+    private TextView basketTotalView; // total
+    private ImageView purchaseView; // purchase
 
     private int count = 0;
 
     ArrayList<Set> setList = new ArrayList<Set>(); // list use to display on the home
     ArrayList<String> searchList = new ArrayList<String>(); // list use to display search list
     ArrayList<Basket> basketList = new ArrayList<Basket>(); // list use to display basket list
+    ArrayList<Order> orderNumberList = new ArrayList<Order>(); // list use to display order list
 
     @SuppressLint("ResourceType")
     @Override
@@ -47,6 +61,11 @@ public class MainActivity extends AppCompatActivity {
 
         basketListView = (ListView)findViewById(R.id.listBasket);
         basketListView.setVisibility(View.GONE);
+        basketTotalView = (TextView) findViewById(R.id.displayBasketTotal);
+        basketTotalView.setVisibility(View.GONE);
+        purchaseView = (ImageView) findViewById(R.id.purchaseButton);
+        purchaseView.setVisibility(View.GONE);
+        orderListView = (ListView) findViewById(R.id.orderList);
 
         SetDBManager setDBManager = new SetDBManager(this);
         setDBManager.open();
@@ -148,10 +167,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String s) {
                 if (!TextUtils.isEmpty(s)){
-                    adapter.getFilter().filter(s);
+                    adapter.getFilter().filter(s); // set the search bar value with input
                 }else{
                     searchListView.setVisibility(View.VISIBLE);
-                    adapter.getFilter().filter("");
+                    adapter.getFilter().filter(""); // reset the search bar value
                     searchView.clearFocus();
                 }
                 return false;
@@ -172,15 +191,30 @@ public class MainActivity extends AppCompatActivity {
                     listView.setVisibility(View.VISIBLE);
                     searchView.setVisibility(View.VISIBLE);
                     basketListView.setVisibility(View.GONE);
-                }
-                else if(rb.getText().equals("Basket")) {
+                    basketTotalView.setVisibility(View.GONE);
+                    purchaseView.setVisibility(View.GONE);
+                    orderListView.setVisibility(View.GONE);
+                } else if(rb.getText().equals("Basket")) {
                     listView.setVisibility(View.GONE);
                     searchListView.setVisibility(View.GONE);
                     searchView.setVisibility(View.GONE);
                     displayBasket();
+                    displayBasketTotal();
                     basketListView.setVisibility(View.VISIBLE);
+                    basketTotalView.setVisibility(View.VISIBLE);
+                    purchaseView.setVisibility(View.VISIBLE);
+                    orderListView.setVisibility(View.GONE);
+                } else if(rb.getText().equals("Order")) {
+                    listView.setVisibility(View.GONE);
+                    searchView.setVisibility(View.GONE);
+                    basketListView.setVisibility(View.GONE);
+                    basketTotalView.setVisibility(View.GONE);
+                    purchaseView.setVisibility(View.GONE);
+                    orderListView.setVisibility(View.GONE);
+                    displayOrder();
+                    orderListView.setVisibility(View.VISIBLE);
                 }
-                Toast.makeText(getApplicationContext(),rb.getText(),Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(),rb.getText(),Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -190,14 +224,15 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
         if(count > 0) {
-            displayBasket();
+            displayBasket(); // reload displayBasket
+            displayBasketTotal(); //reload displayBasketTotal
         }
 
-        count++;
+        count++; // when the app init, it will run this function once, to avoid call this function from start
     }
 
     public void displayBasket() {
-        basketList.clear();
+        basketList.clear(); // clear the list to avoid display product many times
 
         BasketDBManager basketDBManager = new BasketDBManager(this);
         basketDBManager.open();
@@ -234,6 +269,139 @@ public class MainActivity extends AppCompatActivity {
                 b.putString("setPrice", basketList.get(position).getSet_price());
                 b.putString("setQuantity", basketList.get(position).getSet_quantity());
                 b.putString("setImage", basketList.get(position).getSet_image());
+                intent.putExtras(b);
+
+                startActivity(intent);
+            }
+        });
+    }
+
+    public void displayBasketTotal() {
+        int quantity = 0;
+        float price = 0, itemPrice = 0, sum = 0;
+        basketTotalView = (TextView) findViewById(R.id.displayBasketTotal);
+
+        BasketDBManager basketDBManager = new BasketDBManager(this);
+        basketDBManager.open();
+
+        Cursor cursor= basketDBManager.getAllBasketItem();
+
+        // Calculate the total price
+        if (cursor.moveToFirst()) {
+            do {
+                price = Float.parseFloat(cursor.getString(3).substring(1));
+                quantity = Integer.parseInt(cursor.getString(5));
+                itemPrice = price * quantity;
+                sum = sum + itemPrice;
+            } while (cursor.moveToNext());
+        }
+
+        // format the price
+        DecimalFormat decimalFormat = new DecimalFormat("00.00");
+
+        // set the total
+        basketTotalView.setText("Total: " + "€" + decimalFormat.format(sum));
+
+        basketDBManager.close();
+    }
+
+    //------------------------------------------ basket page purchase sets button ---------------------------------------------
+    public void purchase(View view) {
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle("Purchase")
+                .setMessage("Are you sure you want to buy these sets?")
+                .setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(getApplicationContext(), "Purchase successful", Toast.LENGTH_SHORT).show();
+
+                        int randomNumber;
+                        String orderNumber, orderDate;
+                        ArrayList<Order> orderList = new ArrayList<Order>();
+                        basketTotalView = (TextView) findViewById(R.id.displayBasketTotal);
+
+                        // random number for order number
+                        randomNumber = new Random().nextInt(50000);
+                        orderNumber = String.valueOf(10000 + randomNumber);
+
+                        // data format for current date
+                        SimpleDateFormat sdf = new SimpleDateFormat();
+                        sdf.applyPattern("yyyy-MM-dd HH:mm:ss a");
+                        Date date = new Date();
+                        orderDate = sdf.format(date);
+
+                        // handle the basket database, after purchase delete all the data from the basket
+                        BasketDBManager basketDBManager = new BasketDBManager(getApplicationContext());
+                        basketDBManager.open();
+
+                        Cursor cursor= basketDBManager.getAllBasketItem();
+
+                        if (cursor.moveToFirst()) {
+                            do {
+                                Order order = new Order(orderNumber, orderDate, cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(5));
+                                orderList.add(order);
+                            } while (cursor.moveToNext());
+                        }
+
+                        // delete the basket data and reload basket and total
+                        basketDBManager.deleteBasket();
+                        displayBasket();
+                        displayBasketTotal();
+
+                        basketDBManager.close();
+
+                        //--------------------------------------add to the order--------------------------------------
+                        OrderDBManager orderDBManager = new OrderDBManager(getApplicationContext());
+                        orderDBManager.open();
+
+                        for(Order order : orderList) {
+                            orderDBManager.insertOrder(order);
+                        }
+
+                        orderDBManager.close();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(getApplicationContext(), "Purchase canceled", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .show();
+    }
+
+    public void displayOrder() {
+        orderNumberList.clear(); // clear the list to avoid display product many times
+
+        OrderDBManager orderDBManager = new OrderDBManager(this);
+        orderDBManager.open();
+
+        Cursor orderCursor = orderDBManager.getAllOrderNumber();
+
+        if (orderCursor.moveToFirst()) {
+            do {
+                Order order = new Order();
+                order.setOrder_number(orderCursor.getString(0));
+                order.setOrder_date(orderCursor.getString(1));
+                orderNumberList.add(order);
+            } while (orderCursor.moveToNext());
+        }
+
+        orderCursor.close();
+
+        orderListView = (ListView) findViewById(R.id.orderList);
+
+        OrderList orderList = new OrderList(this, orderNumberList);
+        orderListView.setAdapter(orderList);
+
+        orderListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Intent intent = new Intent(MainActivity.this, DisplayOrderInfo.class);
+
+                Bundle b = new Bundle();
+                b.putString("orderNumber", orderNumberList.get(position).getOrder_number());
+
                 intent.putExtras(b);
 
                 startActivity(intent);

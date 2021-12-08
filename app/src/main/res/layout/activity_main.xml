@@ -34,6 +34,32 @@
         android:layout_marginLeft="50dp"
         android:layout_marginBottom="60dp" />
 
+    <TextView
+        android:id="@+id/displayBasketTotal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="225dp"
+        android:layout_marginTop="515dp"
+        android:textSize="16dp"
+        android:textColor="#1E90FF" />
+
+    <ImageView
+        android:id="@+id/purchaseButton"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginLeft="345dp"
+        android:layout_marginTop="516dp"
+        android:background="@drawable/purchase"
+        android:onClick="purchase"
+        android:focusable="false" />
+
+    <ListView
+        android:id="@+id/orderList"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginBottom="60dp" />
+
     <RadioGroup
         android:id="@+id/radioGroup"
         android:layout_width="match_parent"
