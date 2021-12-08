@@ -12,12 +12,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Lego_repo">
         <activity
+            android:name=".DisplayBasketInfo"
+            android:exported="true" />
+        <activity
             android:name=".DisplaySetInfo"
             android:exported="true" />
         <activity
             android:name=".MainActivity"
-            android:windowSoftInputMode="adjustPan|stateHidden"
-            android:exported="true">
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan|stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -48,7 +48,7 @@ public class SetDBManager
     }
 
     //---insert a task into the database---
-    public long insertTask(Set set)
+    public long insertSet(Set set)
     {
         ContentValues initialValues = new ContentValues();
         initialValues.put(KEY_SETNAME, set.getSet_name());
@@ -79,7 +79,7 @@ public class SetDBManager
 
     }
 
-    public Cursor getLastTask()
+    public Cursor getLastSet()
     {
         Cursor mCursor = myDatabase.query(DATABASE_TABLE, new String[] {KEY_ROWID, KEY_SETNAME, KEY_SETNUMBER, KEY_SETDESC, KEY_SETPRICE, KEY_SETIMAGE},
                 null, null, null, null, null);
@@ -90,7 +90,7 @@ public class SetDBManager
     }
 
     //---retrieves a particular task---
-    public Cursor getTask(long rowId) throws SQLException
+    public Cursor getSet(long rowId) throws SQLException
     {
         Cursor mCursor = myDatabase.query(true, DATABASE_TABLE, new String[] {KEY_ROWID, KEY_SETNAME, KEY_SETNUMBER, KEY_SETDESC, KEY_SETPRICE, KEY_SETIMAGE},
                         KEY_ROWID + "=" + rowId, null, null, null, null, null);
@@ -111,7 +111,7 @@ public class SetDBManager
     }
 
     //---updates a task---
-    public boolean updatePerson(long rowId, String set_name, String set_number, String set_description, String set_price, String set_image)
+    public boolean updatePerson(long rowId, String set_name, String set_number, String set_description, String set_price, String set_image, String set_localImage)
     {
         ContentValues args = new ContentValues();
         args.put(KEY_SETNAME, set_name);

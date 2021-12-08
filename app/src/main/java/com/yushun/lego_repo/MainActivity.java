@@ -10,12 +10,16 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import com.yushun.lego_repo.basketOperate.BasketDBManager;
+import com.yushun.lego_repo.basketOperate.BasketList;
+import com.yushun.lego_repo.pojo.Basket;
 import com.yushun.lego_repo.pojo.Set;
 import com.yushun.lego_repo.setsOperate.SetDBManager;
 import com.yushun.lego_repo.setsOperate.SetList;
@@ -25,12 +29,15 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     private ListView listView; // List
     private ListView searchListView; // Search List
+    private ListView basketListView; // Basket List
     private SearchView searchView; // Search
-    private String info; // Info from search bar
     private RadioGroup radioGroup;
+
+    private int count = 0;
 
     ArrayList<Set> setList = new ArrayList<Set>(); // list use to display on the home
     ArrayList<String> searchList = new ArrayList<String>(); // list use to display search list
+    ArrayList<Basket> basketList = new ArrayList<Basket>(); // list use to display basket list
 
     @SuppressLint("ResourceType")
     @Override
@@ -38,13 +45,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        basketListView = (ListView)findViewById(R.id.listBasket);
+        basketListView.setVisibility(View.GONE);
+
         SetDBManager setDBManager = new SetDBManager(this);
         setDBManager.open();
 
-//        setDBManager.insertTask(new Set("country", "71722", "bad set", "€321", "https://www.lego.com/cdn/cs/set/assets/blt28eab11b67d4156b/31109.jpg?fit=bounds&amp;format=webply&amp;quality=80&amp;width=800&amp;height=800&amp;dpr=1, https://www.lego.com/cdn/cs/set/assets/blt28eab11b67d4156b/31109.jpg?fit=bounds&amp;format=webply&amp;quality=80&amp;width=800&amp;height=800&amp;dpr=1.5 1.5x, https://www.lego.com/cdn/cs/set/assets/blt28eab11b67d4156b/31109.jpg?fit=bounds&amp;format=webply&amp;quality=80&amp;width=800&amp;height=800&amp;dpr=2 2x"));
-//        setDBManager.insertTask(new Set("country", "71789", "bad set", "€321", "https://www.lego.com/cdn/cs/set/assets/blt28eab11b67d4156b/31109.jpg?fit=bounds&amp;format=webply&amp;quality=80&amp;width=800&amp;height=800&amp;dpr=1, https://www.lego.com/cdn/cs/set/assets/blt28eab11b67d4156b/31109.jpg?fit=bounds&amp;format=webply&amp;quality=80&amp;width=800&amp;height=800&amp;dpr=1.5 1.5x, https://www.lego.com/cdn/cs/set/assets/blt28eab11b67d4156b/31109.jpg?fit=bounds&amp;format=webply&amp;quality=80&amp;width=800&amp;height=800&amp;dpr=2 2x"));
+//        setDBManager.insertSet(new Set("Creator 3in1 Pirate Ship Toy, Pirates’ Inn, Island", "31109", "This awesome, detailed set features a pirate ship with moving sails, cannons and a cabin with opening roof and sides, 3 minifigures, buildable figures including a shark and a parrot, plus lots of other brick-built details and cool accessories to jump-start play.", "€99.99", "https://www.lego.com/cdn/cs/set/assets/blt28eab11b67d4156b/31109.jpg?fit=bounds&amp;format=webply&amp;quality=80&amp;width=800&amp;height=800&amp;dpr=1, https://www.lego.com/cdn/cs/set/assets/blt28eab11b67d4156b/31109.jpg?fit=bounds&amp;format=webply&amp;quality=80&amp;width=800&amp;height=800&amp;dpr=1.5 1.5x, https://www.lego.com/cdn/cs/set/assets/blt28eab11b67d4156b/31109.jpg?fit=bounds&amp;format=webply&amp;quality=80&amp;width=800&amp;height=800&amp;dpr=2 2x"));
+//        setDBManager.insertSet(new Set("Star Wars Millennium Falcon Starship Building Set", "75257", "bad set", "€169.99", "https://www.lego.com/cdn/cs/set/assets/blt892f38a4fd55edeb/75257.jpg?fit=bounds&format=webply&quality=80&width=800&height=800&dpr=1,\n" + "https://www.lego.com/cdn/cs/set/assets/blt892f38a4fd55edeb/75257.jpg?fit=bounds&format=webply&quality=80&width=800&height=800&dpr=1.5 1.5x,\n" + "https://www.lego.com/cdn/cs/set/assets/blt892f38a4fd55edeb/75257.jpg?fit=bounds&format=webply&quality=80&width=800&height=800&dpr=2 2x"));
 
-        Cursor cursor= setDBManager.getAllSet();
+        Cursor cursor = setDBManager.getAllSet();
 
         if (cursor.moveToFirst()) {
             do {
@@ -61,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
         setDBManager.close();
 
+        //---------------------------------------------Home page--------------------------------------------------
         // the default list
         listView = (ListView)findViewById(R.id.list);
 
@@ -70,8 +81,6 @@ public class MainActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Toast.makeText(getApplicationContext(),"",Toast.LENGTH_SHORT).show();
-
                 Intent intent = new Intent(MainActivity.this, DisplaySetInfo.class);
 
                 Bundle b = new Bundle();
@@ -109,23 +118,25 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtras(b);
 
                 startActivity(intent);
-//                setDBManager.open();
-//
-//                Cursor cursor= setDBManager.getSetByNumber(s);
-//
-//                Bundle b = new Bundle();
-//                b.putString("setName", cursor.getString(1));
-//                b.putString("setNumber", cursor.getString(2));
-//                b.putString("setDesc", cursor.getString(3));
-//                b.putString("setPrice", cursor.getString(4));
-//                b.putString("setImage", cursor.getString(5));
-//                intent.putExtras(b);
-//                startActivity(intent);
             }
         });
 
         // the search bar view and search event
         searchView = findViewById(R.id.search);
+        searchView.setFocusable(true);
+
+        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if(b) {
+                    listView.setVisibility(View.GONE);
+                    searchListView.setVisibility(View.VISIBLE);
+                }else {
+                    listView.setVisibility(View.VISIBLE);
+                    searchListView.setVisibility(View.GONE);
+                }
+            }
+        });
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
@@ -137,18 +148,19 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String s) {
                 if (!TextUtils.isEmpty(s)){
-                    info = s;
-                    listView.setVisibility(View.GONE);
-                    searchListView.setVisibility(View.VISIBLE);
                     adapter.getFilter().filter(s);
                 }else{
-                    listView.setVisibility(View.VISIBLE);
-                    searchListView.setVisibility(View.GONE);
+                    searchListView.setVisibility(View.VISIBLE);
+                    adapter.getFilter().filter("");
+                    searchView.clearFocus();
                 }
-                return true;
+                return false;
             }
         });
+        //---------------------------------------------------------------------------------------------------
+        //---------------------------------------------------------------------------------------------------
 
+        //---------------------------------------------bottom menu-------------------------------------------
         // bottom menu
         radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
 
@@ -159,13 +171,72 @@ public class MainActivity extends AppCompatActivity {
                 if(rb.getText().equals("Home")) {
                     listView.setVisibility(View.VISIBLE);
                     searchView.setVisibility(View.VISIBLE);
+                    basketListView.setVisibility(View.GONE);
                 }
                 else if(rb.getText().equals("Basket")) {
                     listView.setVisibility(View.GONE);
                     searchListView.setVisibility(View.GONE);
                     searchView.setVisibility(View.GONE);
+                    displayBasket();
+                    basketListView.setVisibility(View.VISIBLE);
                 }
                 Toast.makeText(getApplicationContext(),rb.getText(),Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if(count > 0) {
+            displayBasket();
+        }
+
+        count++;
+    }
+
+    public void displayBasket() {
+        basketList.clear();
+
+        BasketDBManager basketDBManager = new BasketDBManager(this);
+        basketDBManager.open();
+
+        Cursor basketCursor = basketDBManager.getAllBasketItem();
+
+        if (basketCursor.moveToFirst()) {
+            do {
+                Basket basket = new Basket();
+                basket.setSet_name(basketCursor.getString(1));
+                basket.setSet_number(basketCursor.getString(2));
+                basket.setSet_price(basketCursor.getString(3));
+                basket.setSet_image(basketCursor.getString(4));
+                basket.setSet_quantity(basketCursor.getString(5));
+                basketList.add(basket);
+            } while (basketCursor.moveToNext());
+        }
+
+        basketDBManager.close();
+
+        basketListView = (ListView)findViewById(R.id.listBasket);
+
+        BasketList basketViewList = new BasketList(this, basketList);
+        basketListView.setAdapter(basketViewList);
+
+        basketListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Intent intent = new Intent(MainActivity.this, DisplayBasketInfo.class);
+
+                Bundle b = new Bundle();
+                b.putString("setName", basketList.get(position).getSet_name());
+                b.putString("setNumber", basketList.get(position).getSet_number());
+                b.putString("setPrice", basketList.get(position).getSet_price());
+                b.putString("setQuantity", basketList.get(position).getSet_quantity());
+                b.putString("setImage", basketList.get(position).getSet_image());
+                intent.putExtras(b);
+
+                startActivity(intent);
             }
         });
     }

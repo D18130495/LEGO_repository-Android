@@ -38,13 +38,10 @@ public class SetList extends ArrayAdapter {
         textViewName.setText(setList.get(position).getSet_name());
         textViewNumber.setText(setList.get(position).getSet_number());
         imageViewImage.setTag(setList.get(position).getSet_image());
+        imageViewImage.setImageResource(R.drawable.toozn);
 
-        Thread thread = new Thread(){
-            public void run() {
-                new LoadImage(imageViewImage).execute();
-            }
-        };
-//        thread.start();
+//                new LoadImage(imageViewImage).execute();
+
 
         return row;
     }

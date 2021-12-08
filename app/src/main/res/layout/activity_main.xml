@@ -17,7 +17,7 @@
         android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="50dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="52dp"
         android:layout_marginBottom="60dp" />
 
     <ListView
@@ -27,6 +27,12 @@
         android:layout_marginLeft="50dp"
         android:layout_marginTop="60dp" />
 
+    <ListView
+        android:id="@+id/listBasket"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginBottom="60dp" />
 
     <RadioGroup
         android:id="@+id/radioGroup"

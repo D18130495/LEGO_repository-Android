@@ -2,13 +2,23 @@ package com.yushun.lego_repo;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.database.Cursor;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.yushun.lego_repo.basketOperate.BasketDBManager;
+import com.yushun.lego_repo.pojo.Basket;
+import com.yushun.lego_repo.pojo.Set;
 import com.yushun.lego_repo.utils.LoadImage;
 
 public class DisplaySetInfo extends AppCompatActivity {
+    private String setName;
+    private String setNumber;
+    private String setDesc;
+    private String setPrice;
+    private String setImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,11 +26,11 @@ public class DisplaySetInfo extends AppCompatActivity {
         setContentView(R.layout.activity_display_set_info);
 
         Bundle b = getIntent().getExtras();
-        String setName = b.getString("setName");
-        String setNumber = b.getString("setNumber");
-        String setDesc = b.getString("setDesc");
-        String setPrice = b.getString("setPrice");
-        String setImage = b.getString("setImage");
+        setName = b.getString("setName");
+        setNumber = b.getString("setNumber");
+        setDesc = b.getString("setDesc");
+        setPrice = b.getString("setPrice");
+        setImage = b.getString("setImage");
 
         TextView display_setName = (TextView) findViewById(R.id.displaySetName);
         TextView display_setNumber = (TextView) findViewById(R.id.displaySetNumber);
@@ -36,5 +46,25 @@ public class DisplaySetInfo extends AppCompatActivity {
         display_setImage.setTag(setImage);
 
         new LoadImage(display_setImage).execute();
+    }
+
+    public void updateBasket(View view) {
+        BasketDBManager basketDBManager = new BasketDBManager(this);
+        basketDBManager.open();
+
+        Cursor cursor= basketDBManager.getBasketItemByNumber(setNumber);
+
+        if(cursor.getCount() == 0) {
+            basketDBManager.insertBasket(new Basket(setName, setNumber, setPrice, setImage, "1"));
+        }else {
+            String current = cursor.getString(5);
+            Integer newQuantity = Integer.parseInt(current) + 1;
+
+            basketDBManager.updateBasket(setName, setNumber, setPrice, setImage, newQuantity.toString());
+        }
+
+        basketDBManager.close();
+
+        this.finish();
     }
 }
