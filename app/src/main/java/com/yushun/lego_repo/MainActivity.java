@@ -18,6 +18,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -41,6 +42,7 @@ import com.yushun.lego_repo.pojo.Order;
 import com.yushun.lego_repo.pojo.Set;
 import com.yushun.lego_repo.setsOperate.SetDBManager;
 import com.yushun.lego_repo.setsOperate.SetList;
+import com.yushun.lego_repo.utils.MapAvailable;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -68,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private long minTime = 500;
     private float minDistance = 1;
     private static final int MY_PERMISSION_GPS = 1;
+    private Location location;
 
     private int count = 0;
     private float total = 0;
@@ -525,10 +528,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     @Override
     public void onLocationChanged(@NonNull Location location) {
         String latestLocation = "";
+        this.location = location;
 
         if (location != null) {
             latestLocation = String.format(
-                    "Latitude %1$s Longitude : %2$s",
+                    "Latitude: %1$s Longitude: %2$s",
                     Math.round(location.getLatitude()), Math.round(location.getLongitude()));
         }
         locationView.setText("Latitude and longitude of your current location:" + "\n" + latestLocation);
@@ -549,5 +553,21 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             }
         } catch (Exception e) {
         }
+    }
+
+    public void displayMap(View view) {
+//        MapAvailable mapAvailable = new MapAvailable();
+//        if(mapAvailable.isAvailable(this, "com.google.android.apps.maps")) {
+//            System.out.println("123");
+//        }else {
+//            Uri uri = Uri.parse("market://details?id=com.google.android.apps.maps");
+//            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+//            startActivity(intent);
+//        }
+
+        Uri currentLocation = Uri.parse("geo:" + location.getLatitude()+ "," + location.getLongitude() + "?q=" + Uri.encode("Lego"));
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, currentLocation);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        startActivity(mapIntent);
     }
 }
