@@ -16,12 +16,14 @@ import java.util.ArrayList;
 
 public class SetList extends ArrayAdapter {
     private ArrayList<Set> setList;
+    private ArrayList<Integer> imageList;
     private Activity context;
 
-    public SetList(Activity context, ArrayList<Set> setList) {
+    public SetList(Activity context, ArrayList<Set> setList, ArrayList<Integer> imageList) {
         super(context, R.layout.row_item, setList);
         this.context = context;
         this.setList = setList;
+        this.imageList = imageList;
     }
 
     @Override
@@ -38,10 +40,9 @@ public class SetList extends ArrayAdapter {
         textViewName.setText(setList.get(position).getSet_name());
         textViewNumber.setText(setList.get(position).getSet_number());
         imageViewImage.setTag(setList.get(position).getSet_image());
-        imageViewImage.setImageResource(R.drawable.toozn);
+        imageViewImage.setImageResource(imageList.get(position));
 
 //                new LoadImage(imageViewImage).execute();
-
 
         return row;
     }
