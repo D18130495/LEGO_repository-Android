@@ -44,9 +44,12 @@ public class MainActivity extends AppCompatActivity {
     private SearchView searchView; // Search
     private RadioGroup radioGroup; // bottom menus
     private TextView basketTotalView; // total
+    private TextView basketEmptyView; // display basket if empty
     private ImageView purchaseView; // purchase
 
     private int count = 0;
+    private float total = 0;
+    private RadioButton rb;
 
     ArrayList<Set> setList = new ArrayList<Set>(); // list use to display on the home
     ArrayList<String> searchList = new ArrayList<String>(); // list use to display search list
@@ -63,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
         basketListView.setVisibility(View.GONE);
         basketTotalView = (TextView) findViewById(R.id.displayBasketTotal);
         basketTotalView.setVisibility(View.GONE);
+        basketEmptyView = (TextView) findViewById(R.id.displayBasketEmpty);
+        basketEmptyView.setVisibility(View.GONE);
         purchaseView = (ImageView) findViewById(R.id.purchaseButton);
         purchaseView.setVisibility(View.GONE);
         orderListView = (ListView) findViewById(R.id.orderList);
@@ -183,10 +188,12 @@ public class MainActivity extends AppCompatActivity {
         // bottom menu
         radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
 
+        rb = (RadioButton) findViewById(R.id.home_menu); // set default option
+
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                RadioButton rb = (RadioButton) findViewById(i);
+                rb = (RadioButton) findViewById(i);
                 if(rb.getText().equals("Home")) {
                     listView.setVisibility(View.VISIBLE);
                     searchView.setVisibility(View.VISIBLE);
@@ -194,6 +201,7 @@ public class MainActivity extends AppCompatActivity {
                     basketTotalView.setVisibility(View.GONE);
                     purchaseView.setVisibility(View.GONE);
                     orderListView.setVisibility(View.GONE);
+                    basketEmptyView.setVisibility(View.GONE);
                 } else if(rb.getText().equals("Basket")) {
                     listView.setVisibility(View.GONE);
                     searchListView.setVisibility(View.GONE);
@@ -201,8 +209,15 @@ public class MainActivity extends AppCompatActivity {
                     displayBasket();
                     displayBasketTotal();
                     basketListView.setVisibility(View.VISIBLE);
-                    basketTotalView.setVisibility(View.VISIBLE);
-                    purchaseView.setVisibility(View.VISIBLE);
+                    if((int)total == 0) {
+                        basketTotalView.setVisibility(View.GONE);
+                        purchaseView.setVisibility(View.GONE);
+                        basketEmptyView.setVisibility(View.VISIBLE);
+                    }else {
+                        basketTotalView.setVisibility(View.VISIBLE);
+                        purchaseView.setVisibility(View.VISIBLE);
+                        basketEmptyView.setVisibility(View.GONE);
+                    }
                     orderListView.setVisibility(View.GONE);
                 } else if(rb.getText().equals("Order")) {
                     listView.setVisibility(View.GONE);
@@ -213,6 +228,7 @@ public class MainActivity extends AppCompatActivity {
                     orderListView.setVisibility(View.GONE);
                     displayOrder();
                     orderListView.setVisibility(View.VISIBLE);
+                    basketEmptyView.setVisibility(View.GONE);
                 }
 //                Toast.makeText(getApplicationContext(),rb.getText(),Toast.LENGTH_SHORT).show();
             }
@@ -278,7 +294,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void displayBasketTotal() {
         int quantity = 0;
-        float price = 0, itemPrice = 0, sum = 0;
+        float price = 0, itemPrice = 0;
+        total = 0;
         basketTotalView = (TextView) findViewById(R.id.displayBasketTotal);
 
         BasketDBManager basketDBManager = new BasketDBManager(this);
@@ -292,7 +309,7 @@ public class MainActivity extends AppCompatActivity {
                 price = Float.parseFloat(cursor.getString(3).substring(1));
                 quantity = Integer.parseInt(cursor.getString(5));
                 itemPrice = price * quantity;
-                sum = sum + itemPrice;
+                total = total + itemPrice;
             } while (cursor.moveToNext());
         }
 
@@ -300,9 +317,20 @@ public class MainActivity extends AppCompatActivity {
         DecimalFormat decimalFormat = new DecimalFormat("00.00");
 
         // set the total
-        basketTotalView.setText("Total: " + "€" + decimalFormat.format(sum));
+        basketTotalView.setText("Total: " + "€" + decimalFormat.format(total));
 
         basketDBManager.close();
+
+        if(cursor.getCount() == 0) {
+            basketTotalView.setVisibility(View.GONE);
+            purchaseView.setVisibility(View.GONE);
+            basketEmptyView.setVisibility(View.VISIBLE);
+        }else {
+            basketEmptyView.setVisibility(View.GONE);
+        }
+
+        if(rb.getText().equals("Home")) basketEmptyView.setVisibility(View.GONE);
+        if(rb.getText().equals("Order")) basketEmptyView.setVisibility(View.GONE);
     }
 
     //------------------------------------------ basket page purchase sets button ---------------------------------------------

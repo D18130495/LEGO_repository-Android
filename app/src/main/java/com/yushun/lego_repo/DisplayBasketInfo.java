@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.yushun.lego_repo.basketOperate.BasketDBManager;
 import com.yushun.lego_repo.utils.LoadImage;
@@ -56,6 +57,7 @@ public class DisplayBasketInfo extends AppCompatActivity {
 
         if(newQuantity == 0) {
             basketDBManager.deleteBasketByNumber(setNumber);
+            Toast.makeText(getApplicationContext(), "Set has been removed from basket", Toast.LENGTH_SHORT).show();
             this.finish();
             basketDBManager.close();
         }else {
@@ -76,6 +78,7 @@ public class DisplayBasketInfo extends AppCompatActivity {
         String current = cursor.getString(5);
 
         if(Integer.parseInt(current) == 9) {
+            Toast.makeText(getApplicationContext(), "You can only add maximum of nine", Toast.LENGTH_SHORT).show();
             this.finish();
             basketDBManager.close();
         }else {
