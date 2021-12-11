@@ -502,6 +502,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
                 Bundle b = new Bundle();
                 b.putString("orderNumber", orderNumberList.get(position).getOrder_number());
+                b.putString("orderDate", orderNumberList.get(position).getOrder_date());
 
                 intent.putExtras(b);
 

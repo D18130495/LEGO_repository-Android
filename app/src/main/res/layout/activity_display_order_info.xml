@@ -22,4 +22,15 @@
         android:textColor="#4B0082"
         android:layout_below="@id/orderItemList"/>
 
+    <Button
+        android:id="@+id/buttonToAddCalendar"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="60dp"
+        android:layout_marginTop="520dp"
+        android:background="@color/purple_500"
+        android:text="Add to calender"
+        android:textColor="@color/white"
+        android:onClick="addCalender" />
+
 </RelativeLayout>
