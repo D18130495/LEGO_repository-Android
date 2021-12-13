@@ -55,12 +55,12 @@ public class DisplayBasketInfo extends AppCompatActivity {
         String current = cursor.getString(5);
         Integer newQuantity = Integer.parseInt(current) - 1;
 
-        if(newQuantity == 0) {
+        if(newQuantity == 0) { // if quantity is 0, remove this set from basket
             basketDBManager.deleteBasketByNumber(setNumber);
             Toast.makeText(getApplicationContext(), "Set has been removed from basket", Toast.LENGTH_SHORT).show();
             this.finish();
             basketDBManager.close();
-        }else {
+        }else { // if quantity is not 0, update the view
             basketDBManager.updateBasket(setName, setNumber, setPrice, setImage, newQuantity.toString());
 
             basketDBManager.close();
@@ -77,11 +77,11 @@ public class DisplayBasketInfo extends AppCompatActivity {
         Cursor cursor= basketDBManager.getBasketItemByNumber(setNumber);
         String current = cursor.getString(5);
 
-        if(Integer.parseInt(current) == 9) {
+        if(Integer.parseInt(current) == 9) { // the max quantity of the set is 9, and will close the activity
             Toast.makeText(getApplicationContext(), "You can only add maximum of nine", Toast.LENGTH_SHORT).show();
             this.finish();
             basketDBManager.close();
-        }else {
+        }else { // have not achieved the max quantity
             Integer newQuantity = Integer.parseInt(current) + 1;
             basketDBManager.updateBasket(setName, setNumber, setPrice, setImage, newQuantity.toString());
 

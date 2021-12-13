@@ -48,15 +48,16 @@ public class DisplaySetInfo extends AppCompatActivity {
         new LoadImage(display_setImage).execute();
     }
 
+    // use to update basket
     public void updateBasket(View view) {
         BasketDBManager basketDBManager = new BasketDBManager(this);
         basketDBManager.open();
 
         Cursor cursor= basketDBManager.getBasketItemByNumber(setNumber);
 
-        if(cursor.getCount() == 0) {
+        if(cursor.getCount() == 0) { // if no this set in the database, add one
             basketDBManager.insertBasket(new Basket(setName, setNumber, setPrice, setImage, "1"));
-        }else {
+        }else { // if this set in the database, update quantity
             String current = cursor.getString(5);
             Integer newQuantity = Integer.parseInt(current) + 1;
 

@@ -51,7 +51,7 @@ public class OrderDBManager
         orderDB.close();
     }
 
-    //---insert a basket item into the database---
+    //---insert a order item into the database---
     public long insertOrder(Order order)
     {
         ContentValues initialValues = new ContentValues();
@@ -71,33 +71,10 @@ public class OrderDBManager
                 null, null, null, null, null, null);
     }
 
-    //---retrieves a particular Basket Item---
+    //---retrieves a particular order number---
     public Cursor getItemByOrderNumber(String orderNumber) throws SQLException
     {
         return myDatabase.query(DATABASE_TABLE, new String[] {KEY_ORDERNUMBER, KEY_SETNAME, KEY_SETNUMBER, KEY_SETPRICE, KEY_SETQUANTITY},
                 KEY_ORDERNUMBER + "=" + orderNumber, null, null, null, null, null);
-    }
-
-    public Cursor getBasketItemByNumber(String setNumber) throws SQLException
-    {
-        Cursor mCursor = myDatabase.query(true, DATABASE_TABLE, new String[] {KEY_ROWID, KEY_ORDERNUMBER, KEY_ORDERDATE, KEY_SETNAME, KEY_SETNUMBER, KEY_SETPRICE, KEY_SETQUANTITY},
-                KEY_SETNUMBER + "=" + setNumber, null, null, null, null, null);
-        if (mCursor != null) {
-            mCursor.moveToFirst();
-        }
-        return mCursor;
-    }
-
-    //---updates a Basket Item---
-    public boolean updateBasket(String order_number, String order_date, String set_name, String set_number, String set_price, String set_quantity)
-    {
-        ContentValues args = new ContentValues();
-        args.put(KEY_ORDERNUMBER, order_number);
-        args.put(KEY_ORDERDATE, order_date);
-        args.put(KEY_SETNAME, set_name);
-        args.put(KEY_SETNUMBER, set_number);
-        args.put(KEY_SETPRICE, set_price);
-        args.put(KEY_SETQUANTITY, set_quantity);
-        return myDatabase.update(DATABASE_TABLE, args, KEY_SETNUMBER + "=" + set_number, null) > 0;
     }
 }

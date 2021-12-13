@@ -44,7 +44,7 @@ public class BasketList extends ArrayAdapter {
         textViewBasketQuantity.setText(basketList.get(position).getSet_quantity());
         imageViewBasketImage.setTag(basketList.get(position).getSet_image());
 
-                new LoadImage(imageViewBasketImage).execute();
+        new LoadImage(imageViewBasketImage).execute();
 
         return row;
     }

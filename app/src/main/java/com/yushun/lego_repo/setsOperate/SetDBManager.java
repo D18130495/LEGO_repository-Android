@@ -59,47 +59,14 @@ public class SetDBManager
         return myDatabase.insert(DATABASE_TABLE, null, initialValues);
     }
 
-//    public void deleteTable()
-//    {
-//        myDatabase.execSQL("delete from tasklist");
-//    }
-
-    //---deletes a particular task---
-    public boolean deleteTask(long rowId)
-    {
-        // delete statement.  If any rows deleted (i.e. >0), returns true
-        return myDatabase.delete(DATABASE_TABLE, KEY_ROWID + "=" + rowId, null) > 0;
-    }
-
     //---retrieves all the rows ---
     public Cursor getAllSet()
     {
         return myDatabase.query(DATABASE_TABLE, new String[] {KEY_ROWID, KEY_SETNAME, KEY_SETNUMBER, KEY_SETDESC, KEY_SETPRICE, KEY_SETIMAGE},
                 null, null, null, null, null);
-
     }
 
-    public Cursor getLastSet()
-    {
-        Cursor mCursor = myDatabase.query(DATABASE_TABLE, new String[] {KEY_ROWID, KEY_SETNAME, KEY_SETNUMBER, KEY_SETDESC, KEY_SETPRICE, KEY_SETIMAGE},
-                null, null, null, null, null);
-        if (mCursor != null) {
-            mCursor.moveToLast();
-        }
-        return mCursor;
-    }
-
-    //---retrieves a particular task---
-    public Cursor getSet(long rowId) throws SQLException
-    {
-        Cursor mCursor = myDatabase.query(true, DATABASE_TABLE, new String[] {KEY_ROWID, KEY_SETNAME, KEY_SETNUMBER, KEY_SETDESC, KEY_SETPRICE, KEY_SETIMAGE},
-                        KEY_ROWID + "=" + rowId, null, null, null, null, null);
-        if (mCursor != null) {
-            mCursor.moveToFirst();
-        }
-        return mCursor;
-    }
-
+    //---retrieves the set by set number ---
     public Cursor getSetByNumber(String setNumber) throws SQLException
     {
         Cursor mCursor = myDatabase.query(true, DATABASE_TABLE, new String[] {KEY_ROWID, KEY_SETNAME, KEY_SETNUMBER, KEY_SETDESC, KEY_SETPRICE, KEY_SETIMAGE},
@@ -108,17 +75,5 @@ public class SetDBManager
             mCursor.moveToFirst();
         }
         return mCursor;
-    }
-
-    //---updates a task---
-    public boolean updatePerson(long rowId, String set_name, String set_number, String set_description, String set_price, String set_image, String set_localImage)
-    {
-        ContentValues args = new ContentValues();
-        args.put(KEY_SETNAME, set_name);
-        args.put(KEY_SETNUMBER, set_number);
-        args.put(KEY_SETDESC, set_description);
-        args.put(KEY_SETPRICE, set_price);
-        args.put(KEY_SETIMAGE, set_image);
-        return myDatabase.update(DATABASE_TABLE, args, KEY_ROWID + "=" + rowId, null) > 0;
     }
 }

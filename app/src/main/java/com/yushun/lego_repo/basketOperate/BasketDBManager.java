@@ -80,7 +80,6 @@ public class BasketDBManager
     {
         return myDatabase.query(DATABASE_TABLE, new String[] {KEY_ROWID, KEY_SETNAME, KEY_SETNUMBER, KEY_SETPRICE, KEY_SETIMAGE, KEY_SETQUANTITY},
                 null, null, null, null, null);
-
     }
 
     //---retrieves basket item by number---

@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private TextView basketEmptyView; // display basket if empty
     private ImageView purchaseView; // purchase
 
+    // use for location
     private TextView locationView; // the current location
     private TextView localityView; // the current location place
     private Button displayMapView; // use to display map
@@ -72,9 +73,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private static final int MY_PERMISSION_GPS = 1;
     private Location location;
 
-    private int count = 0;
-    private float total = 0;
-    private RadioButton rb;
+    private int count = 0; // use to avoid the onResume function be called when the application is init
+    private float total = 0; // the total price of the order page
+    private RadioButton rb; // track the current page
 
     ArrayList<Set> setList = new ArrayList<Set>(); // list use to display on the home
     ArrayList<Integer> imageList = new ArrayList<Integer>(); // list use to store set image
@@ -104,8 +105,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         localityView.setVisibility(View.GONE);
         displayMapView = (Button) findViewById(R.id.displayMap);
         displayMapView.setVisibility(View.GONE);
-        setUpLocation();
+        setUpLocation(); // set up location permission
 
+        // use to insert the init data
         SetDBManager setDBManager = new SetDBManager(this);
         setDBManager.open();
 
@@ -199,8 +201,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
         // the search bar view and search event
         searchView = findViewById(R.id.search);
-        searchView.setFocusable(true);
+        searchView.setFocusable(true); // set search view can get focus
 
+        // when the search view been clicked, display or remove the search view
         searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
@@ -214,6 +217,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             }
         });
 
+        // when input some data in the search bar, use filter to match the search list and get the result
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
             @Override
@@ -237,7 +241,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         //---------------------------------------------------------------------------------------------------
 
         //---------------------------------------------bottom menu-------------------------------------------
-        // bottom menu
+        // bottom menu, to control which elements should display or remove
         radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
 
         rb = (RadioButton) findViewById(R.id.home_menu); // set default option
@@ -307,6 +311,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         });
     }
 
+    // after finish the activity, reload some elements value
     @Override
     protected void onResume() {
         super.onResume();
@@ -401,6 +406,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             basketEmptyView.setVisibility(View.GONE);
         }
 
+        // use to control the element on the screen when onResume been called
         if(rb.getText().equals("Home")) basketEmptyView.setVisibility(View.GONE);
         if(rb.getText().equals("Order")) basketEmptyView.setVisibility(View.GONE);
         if(rb.getText().equals("Find store")) basketEmptyView.setVisibility(View.GONE);
@@ -557,6 +563,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     }
 
     public void displayMap(View view) {
+        // this will check if google map exits in you phone, if not it will lead you to the market
+        // But current, it can not find the "com.google.android.apps.maps" package in the phone
 //        MapAvailable mapAvailable = new MapAvailable();
 //        if(mapAvailable.isAvailable(this, "com.google.android.apps.maps")) {
 //            System.out.println("123");
