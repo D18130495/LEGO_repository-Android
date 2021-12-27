@@ -3,7 +3,7 @@
 ## Project Introduction
 - [Project Description](#Project-description)
 - [Technology Selection](#technology-selection)
-- [Database(SQLite)](#database(SQLite))
+- [Database(SQLite)](#database(sqlite))
 - [Get started with this project](#get-started-with-this-project)
 - [Features and Functions](#features-and-functions)
 - [Youtube video](#youtube-video)
