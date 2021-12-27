@@ -3,7 +3,7 @@
 ## Project Introduction
 - [Project Description](#Project-description)
 - [Technology Selection](#technology-selection)
-- [Database(SQLite)](#database(sqlite))
+- [Database SQLite](#database-sqlite))
 - [Get started with this project](#get-started-with-this-project)
 - [Features and Functions](#features-and-functions)
 - [Youtube video](#youtube-video)
@@ -21,7 +21,7 @@ This is an Android mobile software used to search and purchase the Lego sets, an
 - Google Map
 - Google Calendar 
 
-## Database(SQLite)
+## Database SQLite
 Use SQLite database, easy to use.
 
 ## Get started with this project
